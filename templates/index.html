@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Registro de Gastos - NaranjaX</title>
+</head>
+<body>
+    <div id="container">
+        <h1>Título</h1>
+        <form action="{{ url_for('add_expense') }}" method="POST">
+            <input type="text" name="tarjeta" placeholder="Tarjeta" required>
+            <input type="text" name="descripcion" placeholder="Descripción" required>
+            <input type="number" name="monto" placeholder="Monto" step="0.01" required>
+            <input type="number" name="cuotas" placeholder="Cuotas" required>
+            <input type="date" name="fecha" placeholder="Fecha">
+            <button type="submit">Agregar Gasto</button>
+        </form>
+
+        <h2>Mensualidades</h2>
+        <div id="mensualidades" class="scroll-container">
+            {% for month, tarjetas in monthly_expenses.items() %}
+                <div class="mes">
+                    <h3>{{ month }}</h3>
+                    <div class="detalles">
+                        {% for tarjeta, items in tarjetas.items() %}
+                            <div class="tarjeta-section">
+                                <h4>{{ tarjeta }}</h4>
+                                <ul>
+                                    {% for item in items %}
+                                        <li>{{ item['fecha'] }} {{ item['descripcion'] }} ${{ item['monto'] | round(2) }} Cuota {{ item['cuota'] }}/{{ item['total_cuotas'] }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <h4>Total ${{ monthly_totals[month] | round(2) }}</h4>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
